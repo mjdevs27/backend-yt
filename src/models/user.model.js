@@ -17,7 +17,7 @@ const userSchema = new Schema({
         // the indexing is made as true for a very particular reasoning so that the searing of the database is easy.
         // for ex: we searching usernames on instagram.
     },
-    emails:{
+    email:{
         type : String,
         unique: true , 
         required:true,
@@ -33,7 +33,7 @@ const userSchema = new Schema({
     },
     avatar:{
         type : String, //cloudinary url
-        required:true 
+        // required:true 
     },
     coverImage:{
         type : String
@@ -54,7 +54,7 @@ const userSchema = new Schema({
             max:22
         }]
     },
-    refreshtToken:{
+    refreshToken:{
         type: String
         // its a long string which is made by the JWT encryption algorithm to refreshToken upon expiry of accessTokens
     }
@@ -66,7 +66,7 @@ const userSchema = new Schema({
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password , 10)
+    this.password = await bcrypt.hash(this.password , 10)
     next()
 })
 

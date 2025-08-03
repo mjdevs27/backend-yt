@@ -4,4 +4,5 @@ const asyncHandler = (requestHandler)=>{
     }
 }
 
-// 2nd way to do the same the thing is amking a async func and apply a try catch block 
+export {asyncHandler}
+// 2nd way to do the same the thing is amking a async func and apply a try catch block
