@@ -91,7 +91,7 @@ userSchema.methods.generateAcessToken= function(){
     )
 }
 
-userSchema.methods.generateAcessToken= function(){
+userSchema.methods.generateRefreshToken= function(){
     jwt.sign(
         {
             _id:this._id,

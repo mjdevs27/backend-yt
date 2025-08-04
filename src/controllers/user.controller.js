@@ -4,6 +4,19 @@ import {User} from "../models/user.model.js"
 import { uploadOncloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+const generateAcessTokensandRefereshTokens = async(userid)=>
+{
+    const user = await User.findById(userid)
+    
+    const acessToken = user.generateAcessToken()
+    const refreshToken = user.generateRefreshToken()
+
+    user.refreshToken = refreshToken;
+    await user.save({validateBeforeSave: false})
+
+    return {acessToken, refreshToken}
+}
+
 const registerUser = asyncHandler(async (req,res)=>{
 // get the userData from the frontend app(here i am using postman)
 // check whether the user has added the required things or not 
@@ -71,4 +84,34 @@ res.status(201).json(
 )
 
 })
-export {registerUser}
+
+const loginUser = asyncHandler(async (req , res)=>{
+    const {username , email , password} = req.body  
+    
+    if(!username || !email){
+        throw new ApiError(404 , "please enter the username or email")    
+    }
+
+    const userfound = User.findOne({
+        $or:[{ password } , { email }]
+    })
+
+    if(!userfound){
+        throw new ApiError(404 , "User does not exist")
+    }
+
+    const isPasswordValid = await userfound.isPasswordVerified(password)
+
+    if(!isPasswordValid){
+        throw new ApiError(401,"Invalid User Credentials")
+    }
+
+    const {acessToken , refreshToken} = generateAcessTokensandRefereshTokens(userfound._id)
+
+
+})
+
+
+export {registerUser,
+    loginUser
+}
